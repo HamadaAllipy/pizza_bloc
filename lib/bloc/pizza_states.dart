@@ -1,20 +1,13 @@
 part of 'pizza_bloc.dart';
 
-abstract class PizzaStates extends Equatable {
-
+abstract class PizzaStates {
   const PizzaStates();
-  @override
-  List<Object?> get props => [];
 }
 
-class PizzaInitial extends PizzaStates{
+class PizzaInitialState extends PizzaStates {}
 
-}
-class PizzaLoaded extends PizzaStates{
-
+class PizzaDataLoadedState extends PizzaStates {
   final List<PizzaModel> pizzas;
-  const PizzaLoaded({required this.pizzas});
 
-  @override
-  List<Object> get props => [pizzas];
+  const PizzaDataLoadedState({required this.pizzas});
 }

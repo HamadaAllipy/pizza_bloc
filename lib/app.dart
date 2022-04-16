@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pizza/view/home_page.dart';
 
-import 'view/home_page.dart';
-
-class MyApp extends MaterialApp {
-  const MyApp({Key? key})
-      : super(
-            key: key,
-            home: const HomePage(),
-            debugShowCheckedModeBanner: false);
+class PizzaApp extends MaterialApp{
+  const PizzaApp({Key? key}): super(key: key , home: const HomePage(), debugShowCheckedModeBanner: false);
 }

@@ -1,43 +1,41 @@
 import 'dart:async';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pizza/models/pizza_models.dart';
+import 'package:pizza/data/pizza_model.dart';
 
 part 'pizza_events.dart';
 
 part 'pizza_states.dart';
 
 class PizzaBloc extends Bloc<PizzaEvents, PizzaStates> {
-  PizzaBloc() : super(PizzaInitial()) {
-    on<LoadPizzaCounter>(_onLoadPizzaCounter);
-    on<AddPizza>(_onAddPizza);
-    on<RemovePizza>(_onRemovePizza);
+  PizzaBloc() : super(PizzaInitialState()) {
+    on<LoadPizzaEvent>(_onLoadPizza);
+    on<AddPizzaEvent>(_onAddPizza);
+    on<RemovePizzaEvent>(_onRemovePizza);
   }
 
-  void _onLoadPizzaCounter(event, emit) async {
-    await Future.delayed(
-      const Duration(seconds: 1),
+  void _onLoadPizza(LoadPizzaEvent event, Emitter<PizzaStates> emit) async{
+    await Future.delayed(const Duration(seconds: 2));
+    emit(
+        const PizzaDataLoadedState(pizzas: [])
     );
-    emit(const PizzaLoaded(pizzas: []));
   }
 
-  void _onAddPizza(AddPizza event, emit) {
-    if (state is PizzaLoaded) {
-      final state = this.state as PizzaLoaded;
+  void _onAddPizza(AddPizzaEvent event, Emitter<PizzaStates> emit) {
+    if(state is PizzaDataLoadedState){
+      final state = this.state as PizzaDataLoadedState;
       emit(
-        PizzaLoaded(
-          pizzas: List.from(state.pizzas)..add(event.pizzaModel),
-        ),
+          PizzaDataLoadedState(pizzas: List.from(state.pizzas)..add(event.pizza))
       );
     }
   }
 
-  void _onRemovePizza(RemovePizza event, emit) {
-    if (state is PizzaLoaded) {
-      final state = this.state as PizzaLoaded;
-      emit(PizzaLoaded(
-          pizzas: List.from(state.pizzas)..remove(event.pizzaModel)));
+  void _onRemovePizza(RemovePizzaEvent event, Emitter<PizzaStates> emit) {
+    if(state is PizzaDataLoadedState){
+      final state = this.state as PizzaDataLoadedState;
+      emit(
+        PizzaDataLoadedState(pizzas: List.from(state.pizzas)..remove(event.pizza))
+      );
     }
   }
 }

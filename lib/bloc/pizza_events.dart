@@ -1,30 +1,21 @@
 part of 'pizza_bloc.dart';
 
-
-/// loadPizzaCounter, AddPizza , RemovePizza
-abstract class PizzaEvents extends Equatable {
+abstract class PizzaEvents{
   const PizzaEvents();
-
-  @override
-  List<Object?> get props => [];
 }
 
-class LoadPizzaCounter extends PizzaEvents {}
+class LoadPizzaEvent extends PizzaEvents{
 
-class AddPizza extends PizzaEvents  {
-  final PizzaModel pizzaModel;
-
-  const AddPizza({required this.pizzaModel});
-
-  @override
-  List<Object> get props => [pizzaModel];
+  final List<PizzaModel> pizzas;
+  const LoadPizzaEvent({required this.pizzas});
 }
+class AddPizzaEvent extends PizzaEvents{
+  final PizzaModel pizza;
+  AddPizzaEvent({required this.pizza});
+}
+class RemovePizzaEvent extends PizzaEvents{
 
-class RemovePizza extends PizzaEvents {
-  final PizzaModel pizzaModel;
+  final PizzaModel pizza;
 
-  const RemovePizza({required this.pizzaModel});
-
-  @override
-  List<Object> get props => [pizzaModel];
+  RemovePizzaEvent({required this.pizza});
 }

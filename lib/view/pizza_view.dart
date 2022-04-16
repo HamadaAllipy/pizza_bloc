@@ -3,116 +3,104 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pizza/bloc/pizza_bloc.dart';
-
-import '../models/pizza_models.dart';
+import 'package:pizza/data/pizza_model.dart';
 
 class PizzaView extends StatelessWidget {
   const PizzaView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Random random = Random();
+    final textTheme = Theme.of(context).textTheme;
+    final random = Random();
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'The Pizza Bloc',
-          style: TextStyle(),
-        ),
         backgroundColor: Colors.orange[800],
-        centerTitle: true,
       ),
-      body: Center(
-        child: BlocBuilder<PizzaBloc, PizzaStates>(
-          builder: (context, state) {
-            if (state is PizzaInitial) {
-              return CircularProgressIndicator(
+      body: BlocBuilder<PizzaBloc, PizzaStates>(
+        builder: (context, state) {
+          if (state is PizzaInitialState) {
+            return Center(
+              child: CircularProgressIndicator(
                 backgroundColor: Colors.orange[800],
-              );
-            }
-            if (state is PizzaLoaded) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '${state.pizzas.length}',
-                    style: const TextStyle(
-                      fontSize: 60,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 1.5,
-                    width: MediaQuery.of(context).size.width,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      clipBehavior: Clip.none,
-                      children: [
-                        for (int index = 0;
-                            index < state.pizzas.length;
-                            index++)
-                          Positioned(
-                            left: random.nextInt(250).toDouble(),
-                            top: random.nextInt(400).toDouble(),
-                            child: SizedBox(
-                              height: 150,
-                              width: 150,
-                              child: state.pizzas[index].image,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }
-            return const Text(
-              'Something went wrong!',
+              ),
             );
-          },
-        ),
+          }
+          if (state is PizzaDataLoadedState) {
+            return Column(
+              children: [
+                Text(
+                  '${state.pizzas.length}',
+                  style: textTheme.headline2!.copyWith(
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(
+                  width: double.infinity,
+                ),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      for(int index = 0 ; index < state.pizzas.length; index++)
+                        Positioned(
+                          left: random.nextInt(250).toDouble(),
+                          top: random.nextInt(400).toDouble(),
+                          child: SizedBox(
+                            width: 150,
+                            height: 150,
+                            child: state.pizzas[index].image,
+                          ),
+                        ),
+                    ],
+                  )
+                ),
+              ],
+            );
+          }
+          return const Text(
+            'Something went error',
+          );
+        },
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
-            child: const Icon(Icons.local_pizza_outlined),
-            backgroundColor: Colors.orange[800],
+            child: const Icon(Icons.local_pizza),
             onPressed: () {
-              context.read<PizzaBloc>().add(AddPizza(pizzaModel: PizzaModel.pizzas[0]));
+              context.read<PizzaBloc>().add(AddPizzaEvent(pizza: PizzaModel.pizzas[0]));
             },
+            backgroundColor: Colors.orange[800],
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
             child: const Icon(Icons.remove),
-            backgroundColor: Colors.orange[800],
             onPressed: () {
-              context.read<PizzaBloc>().add(RemovePizza(pizzaModel: PizzaModel.pizzas[0]));
+              context.read<PizzaBloc>().add(RemovePizzaEvent(pizza: PizzaModel.pizzas[0]));
             },
+            backgroundColor: Colors.orange[800],
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
             child: const Icon(Icons.local_pizza_outlined),
-            backgroundColor: Colors.orange[800],
             onPressed: () {
-              context.read<PizzaBloc>().add(AddPizza(pizzaModel: PizzaModel.pizzas[1]));
+              context.read<PizzaBloc>().add(AddPizzaEvent(pizza: PizzaModel.pizzas[1]));
             },
+            backgroundColor: Colors.orange[800],
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
             child: const Icon(Icons.remove),
-            backgroundColor: Colors.orange[800],
             onPressed: () {
-              context.read<PizzaBloc>().add(RemovePizza(pizzaModel: PizzaModel.pizzas[1]));
+              context.read<PizzaBloc>().add(RemovePizzaEvent(pizza: PizzaModel.pizzas[1]));
             },
-          ),
-          const SizedBox(
-            height: 10,
+            backgroundColor: Colors.orange[800],
           ),
         ],
       ),
