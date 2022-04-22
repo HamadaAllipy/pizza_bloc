@@ -1,106 +1,140 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pizza/bloc/pizza_bloc.dart';
-import 'package:pizza/data/pizza_model.dart';
+
+import '../data/pizza_model.dart';
+import 'second_screen.dart';
 
 class PizzaView extends StatelessWidget {
   const PizzaView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final random = Random();
     return Scaffold(
       appBar: AppBar(
+        title: const Text(
+          'Pizza Counter',
+        ),
+        centerTitle: true,
         backgroundColor: Colors.orange[800],
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+        ),
       ),
-      body: BlocBuilder<PizzaBloc, PizzaStates>(
+      body: BlocBuilder<PizzaBloc, PizzaState>(
         builder: (context, state) {
           if (state is PizzaInitialState) {
             return Center(
               child: CircularProgressIndicator(
-                backgroundColor: Colors.orange[800],
+                color: Colors.orange[800],
               ),
             );
           }
-          if (state is PizzaDataLoadedState) {
-            return Column(
-              children: [
-                Text(
-                  '${state.pizzas.length}',
-                  style: textTheme.headline2!.copyWith(
-                    color: Colors.black,
+          if (state is PizzasLoadedState) {
+            return Center(
+              child: Column(
+                children: [
+                  Text(
+                    '${state.pizzas.length}',
+                    style: Theme.of(context).textTheme.headline2,
                   ),
-                ),
-                const SizedBox(
-                  width: double.infinity,
-                ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      for(int index = 0 ; index < state.pizzas.length; index++)
-                        Positioned(
-                          left: random.nextInt(250).toDouble(),
-                          top: random.nextInt(400).toDouble(),
-                          child: SizedBox(
-                            width: 150,
-                            height: 150,
-                            child: state.pizzas[index].image,
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        for(int index = 0; index < state.pizzas.length; index++)...[
+                          Positioned(
+                            top: random.nextInt(400).toDouble(),
+                            left: random.nextInt(300).toDouble(),
+                            child: SizedBox(
+                              width: 150,
+                              height: 150,
+                              child: state.pizzas[index].image,
+                            ),
                           ),
-                        ),
-                    ],
-                  )
-                ),
-              ],
+                        ]
+
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           }
-          return const Text(
-            'Something went error',
+          return const Center(
+            child: Text(
+              'Some went error',
+            ),
           );
         },
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
-            child: const Icon(Icons.local_pizza),
-            onPressed: () {
-              context.read<PizzaBloc>().add(AddPizzaEvent(pizza: PizzaModel.pizzas[0]));
+            heroTag: 'btn1',
+            onPressed: (){
+              context.read<PizzaBloc>().add(AddPizzaEvent(PizzaModel.pizzas[0]));
             },
             backgroundColor: Colors.orange[800],
+            child: const Icon(
+              Icons.local_pizza,
+            ),
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
-            child: const Icon(Icons.remove),
+            heroTag: 'btn2',
             onPressed: () {
-              context.read<PizzaBloc>().add(RemovePizzaEvent(pizza: PizzaModel.pizzas[0]));
+              context.read<PizzaBloc>().add(RemovePizzaEvent(PizzaModel.pizzas[0]));
             },
             backgroundColor: Colors.orange[800],
+            child: const Icon(
+              Icons.remove,
+            ),
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
-            child: const Icon(Icons.local_pizza_outlined),
+            heroTag: 'btn3',
             onPressed: () {
-              context.read<PizzaBloc>().add(AddPizzaEvent(pizza: PizzaModel.pizzas[1]));
+              context.read<PizzaBloc>().add(AddPizzaEvent(PizzaModel.pizzas[1]));
             },
             backgroundColor: Colors.orange[800],
+            child: const Icon(
+              Icons.local_pizza_outlined,
+            ),
           ),
           const SizedBox(
             height: 10,
           ),
           FloatingActionButton(
-            child: const Icon(Icons.remove),
+            heroTag: 'btn4',
             onPressed: () {
-              context.read<PizzaBloc>().add(RemovePizzaEvent(pizza: PizzaModel.pizzas[1]));
+              context.read<PizzaBloc>().add(RemovePizzaEvent(PizzaModel.pizzas[1]));
             },
             backgroundColor: Colors.orange[800],
+            child: const Icon(
+              Icons.remove,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            heroTag: 'btn5',
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=> const SecondScreen()));
+            },
+            backgroundColor: Colors.orange[800],
+            child: const Icon(
+              Icons.remove,
+            ),
           ),
         ],
       ),
